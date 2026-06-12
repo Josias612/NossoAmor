@@ -80,6 +80,44 @@ body::after{
   visibility:hidden;
 }
 
+.coverImage{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.coverBtn{
+  position:absolute;
+  left:50%;
+  bottom:9%;
+  transform:translateX(-50%);
+  z-index:30;
+  min-width:260px;
+  height:60px;
+  border:none;
+  border-radius:999px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(15px);
+  color:#fff;
+  font-size:1.15rem;
+  font-weight:600;
+  border:1px solid rgba(255,255,255,.25);
+  box-shadow:0 0 25px rgba(255,140,190,.35),0 15px 35px rgba(0,0,0,.35);
+  cursor:pointer;
+  transition:.3s;
+}
+
+.coverBtn:hover{
+  transform:translateX(-50%) scale(1.03);
+}
+
+.coverBtn:active{
+  transform:translateX(-50%) scale(.96);
+}
+
+
 .introCard{
   width:min(92vw,430px);
   padding:32px 24px;
@@ -449,12 +487,8 @@ body::after{
 <body>
 
 <section class="intro" id="intro">
-  <div class="introCard">
-    <div class="introIcon">💌</div>
-    <h1>Preparei um cantinho só nosso</h1>
-    <p>Algumas lembranças, frases simples e um pouco de carinho em forma de página.</p>
-    <button class="startBtn" id="startBtn">abrir com carinho</button>
-  </div>
+    <img src="inicio.png" class="coverImage" alt="Capa">
+    <button class="startBtn coverBtn" id="startBtn">Toque para começar</button>
 </section>
 
 <div class="toast" id="toast">Carregando nossas fotos...</div>
