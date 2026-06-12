@@ -206,7 +206,7 @@ function carregarFotos(){
 
   for(let i = 1; i <= totalFotos; i++){
     const img = new Image();
-    img.src = `fotos/${i}.jpg`;
+    img.src = `${i}.jpg`;
 
     img.onload = () => {
       imagens.push(img.src);
