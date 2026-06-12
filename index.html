@@ -1318,7 +1318,7 @@ const totalFotos = 300;
   Também funciona se você colocar dentro da pasta fotos:
   fotos/1.jpg, fotos/2.jpg...
 */
-const caminhos = ["", ""];
+const caminhos = ["", "./", "fotos/", "./fotos/"];
 
 let imagens = [];
 let indice = 0;
@@ -1432,6 +1432,7 @@ function existeImagem(src){
   return new Promise(resolve => {
     const img = new Image();
     img.decoding = "async";
+    img.loading = "eager";
     img.onload = () => resolve(src);
     img.onerror = () => resolve(null);
     img.src = src;
@@ -1439,14 +1440,52 @@ function existeImagem(src){
 }
 
 async function primeiraImagemValida(lista){
-  const resultados = await Promise.all(lista.map(existeImagem));
-  return resultados.find(Boolean) || null;
+  for(const src of lista){
+    const ok = await existeImagem(src);
+    if(ok) return ok;
+  }
+  return null;
+}
+
+async function processarEmLotes(lista, tamanhoLote = 16){
+  const encontrados = [];
+  for(let i = 0; i < lista.length; i += tamanhoLote){
+    const lote = lista.slice(i, i + tamanhoLote);
+    const resultados = await Promise.all(lote.map(primeiraImagemValida));
+    encontrados.push(...resultados.filter(Boolean));
+    if(encontrados.length > 0 && i > 80){
+      const ultimos = resultados.filter(Boolean).length;
+      if(ultimos === 0 && i > encontrados.length + 60) break;
+    }
+  }
+  return encontrados;
+}
+
+function montarOpcoesFoto(numero){
+  const extensoes = ["jpg","JPG","jpeg","JPEG","png","PNG","webp","WEBP"];
+  const nomes = [
+    String(numero),
+    String(numero).padStart(2, "0"),
+    String(numero).padStart(3, "0")
+  ];
+  const opcoes = [];
+
+  for(const pasta of caminhos){
+    for(const nome of nomes){
+      for(const ext of extensoes){
+        opcoes.push(`${pasta}${nome}.${ext}`);
+      }
+    }
+  }
+
+  return [...new Set(opcoes)];
 }
 
 function aquecerProximasFotos(){
-  for(let i = 0; i < Math.min(4, imagens.length); i++){
+  for(let i = 0; i < Math.min(6, imagens.length); i++){
     const img = new Image();
     img.decoding = "async";
+    img.loading = "eager";
     img.src = imagens[(indice + i) % imagens.length];
   }
 }
@@ -1454,25 +1493,18 @@ function aquecerProximasFotos(){
 async function carregarFotos(){
   showToast("Procurando as fotos...");
 
-  const extensoes = ["jpg", "jpeg", "png", "webp"];
   const tarefas = [];
-
   for(let i = 1; i <= totalFotos; i++){
-    const opcoes = [];
-    for(const pasta of caminhos){
-      for(const ext of extensoes){
-        opcoes.push(`${pasta}${i}.${ext}`);
-      }
-    }
-    tarefas.push(primeiraImagemValida(opcoes));
+    tarefas.push(montarOpcoesFoto(i));
   }
 
-  const resultados = await Promise.all(tarefas);
-  imagens = resultados.filter(Boolean).sort(() => Math.random() - .5);
+  imagens = await processarEmLotes(tarefas, 12);
+  imagens = imagens.sort(() => Math.random() - .5);
 
   if(imagens.length === 0){
-    phrase.textContent = "Nenhuma foto foi encontrada. Coloque as imagens como 1.jpg, 2.jpg, 3.jpg... junto do index.html ou dentro da pasta fotos.";
+    phrase.innerHTML = "Nenhuma foto foi encontrada.<br>Confirme no GitHub se os arquivos estão exatamente como <b>1.jpg, 2.jpg, 3.jpg...</b> ou <b>1.JPG</b>, na mesma pasta do <b>index.html</b>.";
     counter.textContent = "nenhuma imagem encontrada";
+    showToast("Fotos não encontradas. Verifique nomes e letras maiúsculas.");
     return;
   }
 
