@@ -1312,18 +1312,23 @@ body::after{
 const totalFotos = 300;
 
 /*
-  Coloque as imagens junto do index.html:
-  1.jpg, 2.jpg, 3.jpg...
-
-  Também funciona se você colocar dentro da pasta fotos:
-  fotos/1.jpg, fotos/2.jpg...
+  Para carregar MUITO rápido no GitHub Pages, deixe as fotos com nomes simples:
+  1.jpg, 2.jpg, 3.jpg... na mesma pasta do index.html.
+  Também aceita .JPG, .png, .webp e a pasta fotos/.
 */
 const caminhos = ["", "./", "fotos/", "./fotos/"];
+const extensoesPrioritarias = ["jpg", "JPG", "jpeg", "JPEG", "png", "PNG", "webp", "WEBP"];
 
 let imagens = [];
+let imagensSet = new Set();
 let indice = 0;
 let usandoA = true;
 let slideshowTimer = null;
+let fotosProntas = false;
+let buscaIniciada = false;
+let appIniciado = false;
+let primeiraFotoResolve;
+let primeiraFotoPromise = new Promise(resolve => primeiraFotoResolve = resolve);
 
 const frases = [
 "Você chegou de um jeito simples e deixou tudo mais bonito.",
@@ -1416,73 +1421,121 @@ let fotoAberta = false;
 let clickFotoTimer = null;
 let retomadaTimer = null;
 
-document.getElementById("startBtn").addEventListener("click", () => {
-  document.getElementById("intro").classList.add("hidden");
-  showToast("A surpresa começou ❤️");
-  startEffects();
-});
+const startBtn = document.getElementById("startBtn");
+startBtn.addEventListener("click", iniciarComCliqueRapido, {once:true});
 
 function showToast(text){
   toast.textContent = text;
   toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 2600);
+  setTimeout(() => toast.classList.remove("show"), 1800);
 }
 
-function existeImagem(src){
+function sleep(ms){
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function shuffle(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function existeImagem(src, timeout = 3500){
   return new Promise(resolve => {
     const img = new Image();
+    let finalizou = false;
+    const done = ok => {
+      if(finalizou) return;
+      finalizou = true;
+      clearTimeout(timer);
+      resolve(ok ? src : null);
+    };
+    const timer = setTimeout(() => done(false), timeout);
     img.decoding = "async";
     img.loading = "eager";
-    img.onload = () => resolve(src);
-    img.onerror = () => resolve(null);
+    img.onload = () => done(true);
+    img.onerror = () => done(false);
     img.src = src;
   });
 }
 
-async function primeiraImagemValida(lista){
-  for(const src of lista){
-    const ok = await existeImagem(src);
+function montarOpcoesFoto(numero){
+  const nomes = [String(numero), String(numero).padStart(2, "0"), String(numero).padStart(3, "0")];
+  const opcoes = [];
+  for(const pasta of caminhos){
+    for(const nome of nomes){
+      for(const ext of extensoesPrioritarias){
+        opcoes.push(`${pasta}${nome}.${ext}`);
+      }
+    }
+  }
+  return [...new Set(opcoes)];
+}
+
+function adicionarImagem(src){
+  if(!src || imagensSet.has(src)) return false;
+  imagensSet.add(src);
+  imagens.push(src);
+  if(imagens.length === 1) primeiraFotoResolve(src);
+  return true;
+}
+
+async function primeiraImagemValida(opcoes){
+  // Testa primeiro as opções mais prováveis sem esperar todas as variações.
+  for(const src of opcoes){
+    const ok = await existeImagem(src, 1700);
     if(ok) return ok;
   }
   return null;
 }
 
-async function processarEmLotes(lista, tamanhoLote = 16){
-  const encontrados = [];
-  for(let i = 0; i < lista.length; i += tamanhoLote){
-    const lote = lista.slice(i, i + tamanhoLote);
-    const resultados = await Promise.all(lote.map(primeiraImagemValida));
-    encontrados.push(...resultados.filter(Boolean));
-    if(encontrados.length > 0 && i > 80){
-      const ultimos = resultados.filter(Boolean).length;
-      if(ultimos === 0 && i > encontrados.length + 60) break;
+async function carregarFaixa(inicio, fim, lote = 10){
+  for(let i = inicio; i <= fim; i += lote){
+    const numeros = [];
+    for(let n = i; n <= Math.min(fim, i + lote - 1); n++) numeros.push(n);
+    const resultados = await Promise.all(numeros.map(n => primeiraImagemValida(montarOpcoesFoto(n))));
+    let adicionou = 0;
+    resultados.filter(Boolean).forEach(src => { if(adicionarImagem(src)) adicionou++; });
+
+    if(appIniciado && adicionou > 0){
+      counter.textContent = `♡ ${imagens.length} lembrança(s) carregadas`;
+      aquecerProximasFotos();
     }
+    await sleep(20);
   }
-  return encontrados;
 }
 
-function montarOpcoesFoto(numero){
-  const extensoes = ["jpg","JPG","jpeg","JPEG","png","PNG","webp","WEBP"];
-  const nomes = [
-    String(numero),
-    String(numero).padStart(2, "0"),
-    String(numero).padStart(3, "0")
-  ];
-  const opcoes = [];
+async function carregarFotosRapido(){
+  if(buscaIniciada) return primeiraFotoPromise;
+  buscaIniciada = true;
 
-  for(const pasta of caminhos){
-    for(const nome of nomes){
-      for(const ext of extensoes){
-        opcoes.push(`${pasta}${nome}.${ext}`);
-      }
+  // Começa pelas primeiras fotos porque normalmente são 1.jpg, 2.jpg, 3.jpg...
+  carregarFaixa(1, Math.min(24, totalFotos), 6);
+
+  // Continua em segundo plano, sem travar o clique inicial.
+  setTimeout(async () => {
+    await carregarFaixa(25, totalFotos, 12);
+    fotosProntas = true;
+    if(imagens.length > 1){
+      imagens = shuffle(imagens);
+      indice = Math.min(indice, imagens.length - 1);
+      showToast(`${imagens.length} fotos carregadas ✨`);
     }
-  }
+  }, 120);
 
-  return [...new Set(opcoes)];
+  // Caso a primeira imagem esteja depois do número 24, procura o restante também.
+  setTimeout(() => {
+    if(imagens.length === 0) carregarFaixa(25, totalFotos, 16);
+  }, 900);
+
+  return primeiraFotoPromise;
 }
 
 function aquecerProximasFotos(){
-  for(let i = 0; i < Math.min(6, imagens.length); i++){
+  if(!imagens.length) return;
+  for(let i = 0; i < Math.min(10, imagens.length); i++){
     const img = new Image();
     img.decoding = "async";
     img.loading = "eager";
@@ -1490,26 +1543,30 @@ function aquecerProximasFotos(){
   }
 }
 
-async function carregarFotos(){
-  showToast("Procurando as fotos...");
+async function iniciarComCliqueRapido(){
+  startBtn.disabled = true;
+  startBtn.textContent = "Carregando...";
+  showToast("Abrindo nossas fotos...");
+  startEffects();
 
-  const tarefas = [];
-  for(let i = 1; i <= totalFotos; i++){
-    tarefas.push(montarOpcoesFoto(i));
-  }
+  const primeira = await Promise.race([
+    carregarFotosRapido(),
+    sleep(4200).then(() => null)
+  ]);
 
-  imagens = await processarEmLotes(tarefas, 12);
-  imagens = imagens.sort(() => Math.random() - .5);
-
-  if(imagens.length === 0){
-    phrase.innerHTML = "Nenhuma foto foi encontrada.<br>Confirme no GitHub se os arquivos estão exatamente como <b>1.jpg, 2.jpg, 3.jpg...</b> ou <b>1.JPG</b>, na mesma pasta do <b>index.html</b>.";
+  if(!primeira && imagens.length === 0){
+    phrase.innerHTML = "Nenhuma foto foi encontrada.<br>Confirme no GitHub se os arquivos estão como <b>1.jpg, 2.jpg, 3.jpg...</b> na mesma pasta do <b>index.html</b> ou dentro da pasta <b>fotos</b>.";
     counter.textContent = "nenhuma imagem encontrada";
-    showToast("Fotos não encontradas. Verifique nomes e letras maiúsculas.");
+    showToast("Fotos não encontradas. Verifique os nomes.");
+    startBtn.disabled = false;
+    startBtn.textContent = "Tentar novamente";
+    startBtn.addEventListener("click", iniciarComCliqueRapido, {once:true});
     return;
   }
 
+  document.getElementById("intro").classList.add("hidden");
+  appIniciado = true;
   aquecerProximasFotos();
-  showToast(`${imagens.length} lembrança(s) encontradas ✨`);
   iniciar();
 }
 
@@ -1531,6 +1588,7 @@ function trocar(){
   const atual = usandoA ? fotoA : fotoB;
   const proxima = usandoA ? fotoB : fotoA;
 
+  if(indice >= imagens.length) indice = 0;
   proxima.src = imagens[indice];
   fotoAtualSrc = imagens[indice];
   proxima.classList.add("active");
@@ -1541,7 +1599,7 @@ function trocar(){
   phrase.textContent = frases[Math.floor(Math.random() * frases.length)];
   phrase.classList.add("change");
 
-  counter.textContent = `♡ lembrança ${indice + 1} de ${imagens.length}`;
+  counter.textContent = `♡ lembrança ${indice + 1} de ${imagens.length}${fotosProntas ? "" : " carregando..."}`;
   footerText.textContent = indice % 3 === 0
     ? "feito para guardar momentos, não apenas fotos"
     : indice % 3 === 1
@@ -1588,7 +1646,6 @@ function criarNota(){
   setTimeout(() => el.remove(), 12000);
 }
 
-
 function pausarSlide(){
   clearInterval(slideshowTimer);
   slideshowTimer = null;
@@ -1627,7 +1684,7 @@ function jorrarCoracoes(x, y){
   const fim = Date.now() + 2000;
   const criarLote = () => {
     if(Date.now() > fim) return;
-    for(let i = 0; i < 9; i++) criarCoracaoDetalhado(x, y, i);
+    for(let i = 0; i < 9; i++) criarCoracaoDetalhado(x, y);
     for(let i = 0; i < 7; i++) criarBrilhoDetalhado(x, y);
     requestAnimationFrame(() => setTimeout(criarLote, 95));
   };
@@ -1693,8 +1750,10 @@ document.addEventListener("selectstart", (e) => {
   if(e.target.closest(".photoArea") || e.target.closest(".photoImmersive")) e.preventDefault();
 });
 
-carregarFotos();
-setTimeout(() => startEffects(), 1200);
+// Pré-carrega discretamente antes do clique, mas sem travar a página.
+window.addEventListener("load", () => {
+  setTimeout(() => carregarFotosRapido(), 250);
+});
 </script>
 
 </body>
