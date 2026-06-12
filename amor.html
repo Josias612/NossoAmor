@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nosso Amor ❤️</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  min-height:100vh;
+  overflow:hidden;
+  font-family:'Segoe UI',sans-serif;
+  color:white;
+  background:radial-gradient(circle at top,#ff9ac2,#7b1744 45%,#16000d);
+}
+
+.glow{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(255,255,255,.25),transparent 25%),
+    radial-gradient(circle at 80% 80%,rgba(255,0,120,.35),transparent 30%);
+  animation:glowMove 8s infinite alternate ease-in-out;
+}
+
+@keyframes glowMove{
+  from{transform:scale(1)}
+  to{transform:scale(1.15)}
+}
+
+.container{
+  position:relative;
+  z-index:2;
+  height:100vh;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+
+h1{
+  font-size:1.8rem;
+  text-align:center;
+  margin-bottom:18px;
+  text-shadow:0 0 25px white;
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  50%{transform:scale(1.05)}
+}
+
+.card{
+  width:100%;
+  max-width:430px;
+  padding:14px;
+  border-radius:30px;
+  background:rgba(255,255,255,.14);
+  backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.3);
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+  text-align:center;
+}
+
+.fotoBox{
+  height:430px;
+  border-radius:24px;
+  overflow:hidden;
+  position:relative;
+}
+
+.fotoBox img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:24px;
+  opacity:0;
+  transform:scale(1.15) rotate(.5deg);
+  transition:1.4s ease;
+}
+
+.fotoBox img.ativa{
+  opacity:1;
+  transform:scale(1) rotate(0deg);
+}
+
+.fotoBox::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.45),transparent 60%);
+}
+
+.frase{
+  margin-top:18px;
+  font-size:1.15rem;
+  line-height:1.55;
+  min-height:95px;
+  font-style:italic;
+  text-shadow:0 0 14px rgba(0,0,0,.7);
+}
+
+.contador{
+  margin-top:8px;
+  font-size:.9rem;
+  opacity:.85;
+}
+
+.heart,.star{
+  position:fixed;
+  bottom:-40px;
+  z-index:1;
+  pointer-events:none;
+  animation:subir linear forwards;
+}
+
+@keyframes subir{
+  to{
+    transform:translateY(-120vh) rotate(360deg);
+    opacity:0;
+  }
+}
+
+@media(max-width:480px){
+  h1{font-size:1.5rem}
+  .fotoBox{height:390px}
+  .frase{font-size:1.05rem}
+}
+</style>
+</head>
+
+<body>
+
+<div class="glow"></div>
+
+<div class="container">
+  <h1>❤️ Nossa História de Amor ❤️</h1>
+
+  <div class="card">
+    <div class="fotoBox">
+      <img id="foto" alt="Nossa foto">
+    </div>
+
+    <div class="frase" id="frase">Carregando nossas lembranças...</div>
+    <div class="contador" id="contador"></div>
+  </div>
+</div>
+
+<script>
+const totalFotos = 100; 
+let imagens = [];
+let indice = 0;
+
+const frases = [
+"Você é a parte mais bonita da minha vida.",
+"Meu coração sorri quando penso em você.",
+"Com você, até os dias simples ficam especiais.",
+"Seu sorriso é meu lugar favorito no mundo.",
+"Te amar é a melhor escolha que meu coração já fez.",
+"Você é meu carinho em forma de pessoa.",
+"Cada foto nossa guarda um pedaço lindo da nossa história.",
+"Eu não preciso de muito, só de você comigo.",
+"Seu amor deixou meu mundo mais leve.",
+"Você é minha paz no meio da correria.",
+"Quando estou com você, tudo faz sentido.",
+"Eu escolheria você de novo em todas as vidas.",
+"Meu coração encontrou casa em você.",
+"Você é meu presente mais precioso.",
+"Nosso amor é minha história favorita.",
+"Eu amo seu jeito, seu sorriso e tudo que vem de você.",
+"Você transforma momentos pequenos em lembranças eternas.",
+"Meu amor por você cresce todos os dias.",
+"Eu vejo beleza no mundo quando vejo você.",
+"Você é poesia nos meus dias comuns.",
+"Meu destino ficou mais bonito quando encontrou o seu.",
+"Não existe lugar melhor do que ao seu lado.",
+"Seu abraço é o meu refúgio preferido.",
+"Te amar faz minha vida ter mais cor.",
+"Você é o detalhe mais lindo dos meus dias.",
+"Meu coração sabe: é você.",
+"Cada lembrança contigo vale mais que mil palavras.",
+"Você é meu sonho bonito vivendo na realidade.",
+"Eu amo cada pedacinho da nossa história.",
+"Que a vida continue nos dando motivos para sorrir juntos.",
+"Você é meu hoje, meu amanhã e meu sempre.",
+"Meu mundo fica mais bonito quando você está nele.",
+"Seu amor é luz dentro de mim.",
+"Eu não quero perfeição, quero você.",
+"Você é o motivo do meu sorriso bobo.",
+"Nosso amor é simples, forte e verdadeiro.",
+"Com você, meu coração descansa.",
+"Te amar é minha forma favorita de viver.",
+"Você é meu infinito particular.",
+"Você faz qualquer momento valer a pena."
+];
+
+const foto = document.getElementById("foto");
+const frase = document.getElementById("frase");
+const contador = document.getElementById("contador");
+
+function carregarFotos(){
+  let carregadas = 0;
+
+  for(let i = 1; i <= totalFotos; i++){
+    const img = new Image();
+    img.src = `fotos/${i}.jpg`;
+
+    img.onload = () => {
+      imagens.push(img.src);
+      carregadas++;
+
+      if(imagens.length === 1){
+        imagens.sort(() => Math.random() - 0.5);
+        iniciar();
+      }
+    };
+  }
+
+  setTimeout(() => {
+    if(imagens.length === 0){
+      frase.textContent = "Nenhuma foto foi encontrada. Verifique se estão na pasta fotos e nomeadas como 1.jpg, 2.jpg, 3.jpg...";
+    }
+  }, 2500);
+}
+
+function iniciar(){
+  trocar();
+  setInterval(trocar, 5200);
+}
+
+function trocar(){
+  if(imagens.length === 0) return;
+
+  foto.classList.remove("ativa");
+
+  setTimeout(() => {
+    foto.src = imagens[indice];
+    foto.classList.add("ativa");
+
+    frase.textContent = frases[Math.floor(Math.random() * frases.length)];
+    contador.textContent = `${indice + 1} de ${imagens.length} lembranças ❤️`;
+
+    indice++;
+    if(indice >= imagens.length) indice = 0;
+  }, 500);
+}
+
+function particula(){
+  const el = document.createElement("div");
+  const tipo = Math.random() > .45 ? "heart" : "star";
+
+  el.className = tipo;
+  el.innerHTML = tipo === "heart" ? "❤" : "✦";
+  el.style.left = Math.random() * 100 + "vw";
+  el.style.fontSize = (Math.random() * 20 + 14) + "px";
+  el.style.color = tipo === "heart" ? "rgba(255,255,255,.9)" : "rgba(255,220,240,.9)";
+  el.style.animationDuration = (Math.random() * 5 + 5) + "s";
+  el.style.opacity = Math.random();
+
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 10000);
+}
+
+setInterval(particula, 250);
+
+carregarFotos();
+</script>
+
+</body>
+</html>
