@@ -6,267 +6,716 @@
 <title>Nosso Amor ❤️</title>
 
 <style>
+:root{
+  --rose:#ff7aa8;
+  --wine:#3b0622;
+  --dark:#100009;
+  --cream:#fff4ea;
+  --glass:rgba(255,255,255,.13);
+}
+
 *{margin:0;padding:0;box-sizing:border-box}
 
-body{
-  min-height:100vh;
+html,body{
+  width:100%;
+  min-height:100%;
   overflow:hidden;
-  font-family:'Segoe UI',sans-serif;
+  font-family:Inter, "Segoe UI", Arial, sans-serif;
   color:white;
-  background:radial-gradient(circle at top,#ff9ac2,#7b1744 45%,#16000d);
+  background:#12000b;
 }
 
-.glow{
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at 20% 20%,rgba(255,255,255,.25),transparent 25%),
-    radial-gradient(circle at 80% 80%,rgba(255,0,120,.35),transparent 30%);
-  animation:glowMove 8s infinite alternate ease-in-out;
-}
-
-@keyframes glowMove{
-  from{transform:scale(1)}
-  to{transform:scale(1.15)}
-}
-
-.container{
-  position:relative;
-  z-index:2;
+body{
   height:100vh;
-  padding:18px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
+  background:
+    radial-gradient(circle at 12% 12%,rgba(255,215,229,.55),transparent 24%),
+    radial-gradient(circle at 88% 22%,rgba(255,122,168,.28),transparent 26%),
+    radial-gradient(circle at 50% 120%,rgba(255,170,197,.28),transparent 40%),
+    linear-gradient(145deg,#13000b 0%,#32051f 42%,#7a1e46 100%);
 }
 
-h1{
-  font-size:1.8rem;
-  text-align:center;
-  margin-bottom:18px;
-  text-shadow:0 0 25px white;
-  animation:pulse 2s infinite;
-}
-
-@keyframes pulse{
-  50%{transform:scale(1.05)}
-}
-
-.card{
-  width:100%;
-  max-width:430px;
-  padding:14px;
-  border-radius:30px;
-  background:rgba(255,255,255,.14);
-  backdrop-filter:blur(18px);
-  border:1px solid rgba(255,255,255,.3);
-  box-shadow:0 30px 80px rgba(0,0,0,.45);
-  text-align:center;
-}
-
-.fotoBox{
-  height:430px;
-  border-radius:24px;
-  overflow:hidden;
-  position:relative;
-}
-
-.fotoBox img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:24px;
-  opacity:0;
-  transform:scale(1.15) rotate(.5deg);
-  transition:1.4s ease;
-}
-
-.fotoBox img.ativa{
-  opacity:1;
-  transform:scale(1) rotate(0deg);
-}
-
-.fotoBox::after{
+body::before{
   content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(to top,rgba(0,0,0,.45),transparent 60%);
-}
-
-.frase{
-  margin-top:18px;
-  font-size:1.15rem;
-  line-height:1.55;
-  min-height:95px;
-  font-style:italic;
-  text-shadow:0 0 14px rgba(0,0,0,.7);
-}
-
-.contador{
-  margin-top:8px;
-  font-size:.9rem;
+  position:fixed;
+  inset:-30%;
+  background:
+    conic-gradient(from 180deg at 50% 50%,transparent,#ffffff18,transparent,#ff8db52b,transparent);
+  animation:aurora 18s infinite linear;
+  filter:blur(35px);
   opacity:.85;
 }
 
-.heart,.star{
+body::after{
+  content:"";
   position:fixed;
-  bottom:-40px;
-  z-index:1;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:42px 42px;
+  mask-image:radial-gradient(circle at center,black,transparent 78%);
   pointer-events:none;
-  animation:subir linear forwards;
 }
 
-@keyframes subir{
-  to{
-    transform:translateY(-120vh) rotate(360deg);
-    opacity:0;
-  }
+@keyframes aurora{
+  to{transform:rotate(360deg)}
 }
+
+/* INTRO */
+.intro{
+  position:fixed;
+  inset:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:
+    radial-gradient(circle at top,#fff0f6 0%,#ff9fbd 26%,#5a1233 68%,#110009 100%);
+  transition:opacity 1.1s ease,visibility 1.1s ease;
+}
+
+.intro.hidden{
+  opacity:0;
+  visibility:hidden;
+}
+
+.introCard{
+  width:min(92vw,430px);
+  padding:32px 24px;
+  text-align:center;
+  border-radius:34px;
+  background:rgba(255,255,255,.16);
+  backdrop-filter:blur(22px);
+  border:1px solid rgba(255,255,255,.35);
+  box-shadow:0 35px 90px rgba(0,0,0,.42);
+  animation:introUp 1.3s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes introUp{
+  from{opacity:0;transform:translateY(38px) scale(.94)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+
+.introIcon{
+  width:92px;
+  height:92px;
+  margin:0 auto 18px;
+  display:grid;
+  place-items:center;
+  border-radius:30px;
+  background:linear-gradient(135deg,#fff8,#fff1);
+  font-size:3rem;
+  animation:softBeat 2.2s infinite ease-in-out;
+  box-shadow:inset 0 0 25px #fff6,0 20px 45px #0003;
+}
+
+@keyframes softBeat{
+  50%{transform:scale(1.06) rotate(-2deg)}
+}
+
+.intro h1{
+  font-family:Georgia,serif;
+  font-size:2rem;
+  line-height:1.08;
+  letter-spacing:-.04em;
+  margin-bottom:12px;
+}
+
+.intro p{
+  font-size:1rem;
+  line-height:1.55;
+  color:#fff6f9;
+  margin-bottom:22px;
+}
+
+.startBtn{
+  border:none;
+  padding:14px 25px;
+  border-radius:999px;
+  color:#7d1846;
+  background:linear-gradient(135deg,#fff,#ffe5ef);
+  font-weight:800;
+  font-size:1rem;
+  box-shadow:0 18px 40px rgba(0,0,0,.28);
+  cursor:pointer;
+  transition:.25s ease;
+}
+
+.startBtn:active{transform:scale(.96)}
+
+/* MAIN */
+.app{
+  position:relative;
+  z-index:3;
+  height:100vh;
+  padding:18px 14px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.frame{
+  width:min(94vw,450px);
+  position:relative;
+  animation:enterApp 1s .2s both ease;
+}
+
+@keyframes enterApp{
+  from{opacity:0;transform:translateY(25px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.header{
+  text-align:center;
+  margin-bottom:16px;
+}
+
+.kicker{
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+  padding:8px 13px;
+  border-radius:999px;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.2);
+  font-size:.78rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#ffeaf2;
+  backdrop-filter:blur(14px);
+}
+
+.title{
+  margin-top:13px;
+  font-family:Georgia, "Times New Roman", serif;
+  font-weight:500;
+  font-size:clamp(2rem,8vw,3.1rem);
+  letter-spacing:-.08em;
+  line-height:.95;
+  text-shadow:0 18px 45px rgba(0,0,0,.35);
+}
+
+.album{
+  position:relative;
+  padding:12px;
+  border-radius:36px;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.28),rgba(255,255,255,.08));
+  border:1px solid rgba(255,255,255,.3);
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.46),
+    inset 0 1px 0 rgba(255,255,255,.32);
+  backdrop-filter:blur(20px);
+}
+
+.album::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  z-index:-1;
+  border-radius:38px;
+  background:linear-gradient(90deg,#ffffff90,#ff8db540,#ffffff30);
+  filter:blur(12px);
+  opacity:.45;
+}
+
+.photoArea{
+  position:relative;
+  height:min(64vh,500px);
+  min-height:360px;
+  border-radius:28px;
+  overflow:hidden;
+  background:#2b1021;
+  isolation:isolate;
+}
+
+.photoArea img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  transform:scale(1.12);
+  filter:saturate(1.05) contrast(1.04);
+  transition:opacity 1.15s ease, transform 6s ease;
+}
+
+.photoArea img.active{
+  opacity:1;
+  transform:scale(1.01);
+  animation:kenburns 7s ease forwards;
+}
+
+@keyframes kenburns{
+  from{transform:scale(1.12) translateY(8px)}
+  to{transform:scale(1.02) translateY(-6px)}
+}
+
+.photoArea::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(to top,rgba(0,0,0,.65),transparent 48%),
+    radial-gradient(circle at top,transparent 50%,rgba(30,0,16,.24));
+  z-index:2;
+  pointer-events:none;
+}
+
+.ribbon{
+  position:absolute;
+  z-index:5;
+  left:18px;
+  top:18px;
+  display:flex;
+  gap:7px;
+  align-items:center;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(0,0,0,.25);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.22);
+  font-size:.82rem;
+}
+
+.phraseBox{
+  position:absolute;
+  z-index:4;
+  left:16px;
+  right:16px;
+  bottom:16px;
+  padding:17px 16px;
+  border-radius:24px;
+  background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(255,255,255,.09));
+  border:1px solid rgba(255,255,255,.22);
+  backdrop-filter:blur(16px);
+}
+
+.phrase{
+  font-family:Georgia,serif;
+  font-size:clamp(1.08rem,4.6vw,1.45rem);
+  line-height:1.42;
+  text-shadow:0 4px 18px rgba(0,0,0,.45);
+}
+
+.phrase.change{
+  animation:phraseIn .9s cubic-bezier(.18,.85,.2,1);
+}
+
+@keyframes phraseIn{
+  from{opacity:0;transform:translateY(20px);filter:blur(8px)}
+  to{opacity:1;transform:translateY(0);filter:blur(0)}
+}
+
+.progress{
+  margin-top:13px;
+  height:5px;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(255,255,255,.15);
+}
+
+.bar{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#fff,#ffc7dc,#fff);
+  animation:loadBar 6.5s linear infinite;
+}
+
+@keyframes loadBar{
+  from{width:0%}
+  to{width:100%}
+}
+
+.footerText{
+  margin-top:10px;
+  text-align:center;
+  font-size:.84rem;
+  color:#ffe8f1;
+  opacity:.9;
+}
+
+/* FOFURAS */
+.duck{
+  position:fixed;
+  z-index:9;
+  left:-120px;
+  bottom:12vh;
+  font-size:3rem;
+  filter:drop-shadow(0 12px 14px rgba(0,0,0,.35));
+  animation:duckRun 18s linear infinite;
+  pointer-events:none;
+}
+
+.duck span{
+  display:inline-block;
+  animation:duckBounce .35s infinite alternate ease-in-out;
+}
+
+.duck small{
+  font-size:1.7rem;
+  margin-left:-12px;
+  display:inline-block;
+  transform:rotate(-25deg);
+}
+
+@keyframes duckRun{
+  0%{transform:translateX(-140px) scale(.95)}
+  42%{transform:translateX(calc(100vw + 120px)) scale(.95)}
+  100%{transform:translateX(calc(100vw + 120px)) scale(.95)}
+}
+
+@keyframes duckBounce{
+  to{transform:translateY(-8px) rotate(-3deg)}
+}
+
+.loveNote{
+  position:fixed;
+  z-index:2;
+  padding:7px 10px;
+  border-radius:15px;
+  color:#5b1233;
+  background:#fff8;
+  backdrop-filter:blur(10px);
+  font-size:.8rem;
+  font-weight:700;
+  box-shadow:0 12px 28px #0002;
+  opacity:0;
+  animation:noteFloat 9s linear forwards;
+  pointer-events:none;
+}
+
+@keyframes noteFloat{
+  0%{opacity:0;transform:translateY(0) rotate(-5deg) scale(.8)}
+  10%{opacity:.9}
+  90%{opacity:.9}
+  100%{opacity:0;transform:translateY(-110vh) rotate(8deg) scale(1.1)}
+}
+
+.particle{
+  position:fixed;
+  z-index:1;
+  bottom:-35px;
+  pointer-events:none;
+  animation:rise linear forwards;
+  filter:drop-shadow(0 8px 10px rgba(0,0,0,.16));
+}
+
+@keyframes rise{
+  to{transform:translateY(-115vh) rotate(360deg);opacity:0}
+}
+
+.toast{
+  position:fixed;
+  z-index:30;
+  left:50%;
+  top:18px;
+  width:min(92vw,410px);
+  transform:translateX(-50%);
+  padding:13px 15px;
+  border-radius:18px;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.26);
+  backdrop-filter:blur(18px);
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  text-align:center;
+  font-size:.92rem;
+  opacity:0;
+  pointer-events:none;
+  transition:.45s ease;
+}
+
+.toast.show{opacity:1;top:26px}
 
 @media(max-width:480px){
-  h1{font-size:1.5rem}
-  .fotoBox{height:390px}
-  .frase{font-size:1.05rem}
+  .app{padding:14px 10px}
+  .header{margin-bottom:12px}
+  .photoArea{height:63vh;min-height:360px}
+  .album{border-radius:31px;padding:10px}
+  .photoArea{border-radius:24px}
+  .phraseBox{left:12px;right:12px;bottom:12px;padding:15px}
+  .duck{bottom:9vh;font-size:2.55rem}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
 }
 </style>
 </head>
 
 <body>
 
-<div class="glow"></div>
+<section class="intro" id="intro">
+  <div class="introCard">
+    <div class="introIcon">💌</div>
+    <h1>Preparei um cantinho só nosso</h1>
+    <p>Algumas lembranças, frases simples e um pouco de carinho em forma de página.</p>
+    <button class="startBtn" id="startBtn">abrir com carinho</button>
+  </div>
+</section>
 
-<div class="container">
-  <h1>❤️ Nossa História de Amor ❤️</h1>
+<div class="toast" id="toast">Carregando nossas fotos...</div>
 
-  <div class="card">
-    <div class="fotoBox">
-      <img id="foto" alt="Nossa foto">
+<div class="duck"><span>🦆</span><small>🌹</small></div>
+
+<main class="app">
+  <section class="frame">
+    <header class="header">
+      <div class="kicker">feito com carinho ✦ sem pressa</div>
+      <h1 class="title">Nossa pequena história</h1>
+    </header>
+
+    <div class="album">
+      <div class="photoArea">
+        <img id="fotoA" alt="Nossa foto">
+        <img id="fotoB" alt="Nossa foto">
+        <div class="ribbon" id="counter">♡ lembrança</div>
+        <div class="phraseBox">
+          <div class="phrase" id="phrase">Carregando nossas lembranças...</div>
+          <div class="progress"><div class="bar" id="bar"></div></div>
+        </div>
+      </div>
     </div>
 
-    <div class="frase" id="frase">Carregando nossas lembranças...</div>
-    <div class="contador" id="contador"></div>
-  </div>
-</div>
+    <div class="footerText" id="footerText">um pedacinho bonito guardado aqui</div>
+  </section>
+</main>
 
 <script>
-const totalFotos = 100; 
+const totalFotos = 300;
+
+/*
+  Coloque as imagens junto do index.html:
+  1.jpg, 2.jpg, 3.jpg...
+
+  Também funciona se você colocar dentro da pasta fotos:
+  fotos/1.jpg, fotos/2.jpg...
+*/
+const caminhos = ["", "fotos/"];
+
 let imagens = [];
 let indice = 0;
+let usandoA = true;
+let slideshowTimer = null;
 
 const frases = [
-"Você é a parte mais bonita da minha vida.",
-"Meu coração sorri quando penso em você.",
-"Com você, até os dias simples ficam especiais.",
-"Seu sorriso é meu lugar favorito no mundo.",
-"Te amar é a melhor escolha que meu coração já fez.",
-"Você é meu carinho em forma de pessoa.",
-"Cada foto nossa guarda um pedaço lindo da nossa história.",
-"Eu não preciso de muito, só de você comigo.",
-"Seu amor deixou meu mundo mais leve.",
-"Você é minha paz no meio da correria.",
-"Quando estou com você, tudo faz sentido.",
-"Eu escolheria você de novo em todas as vidas.",
-"Meu coração encontrou casa em você.",
-"Você é meu presente mais precioso.",
-"Nosso amor é minha história favorita.",
-"Eu amo seu jeito, seu sorriso e tudo que vem de você.",
-"Você transforma momentos pequenos em lembranças eternas.",
-"Meu amor por você cresce todos os dias.",
-"Eu vejo beleza no mundo quando vejo você.",
-"Você é poesia nos meus dias comuns.",
-"Meu destino ficou mais bonito quando encontrou o seu.",
-"Não existe lugar melhor do que ao seu lado.",
-"Seu abraço é o meu refúgio preferido.",
-"Te amar faz minha vida ter mais cor.",
-"Você é o detalhe mais lindo dos meus dias.",
-"Meu coração sabe: é você.",
-"Cada lembrança contigo vale mais que mil palavras.",
-"Você é meu sonho bonito vivendo na realidade.",
-"Eu amo cada pedacinho da nossa história.",
-"Que a vida continue nos dando motivos para sorrir juntos.",
-"Você é meu hoje, meu amanhã e meu sempre.",
-"Meu mundo fica mais bonito quando você está nele.",
-"Seu amor é luz dentro de mim.",
-"Eu não quero perfeição, quero você.",
-"Você é o motivo do meu sorriso bobo.",
-"Nosso amor é simples, forte e verdadeiro.",
-"Com você, meu coração descansa.",
-"Te amar é minha forma favorita de viver.",
-"Você é meu infinito particular.",
-"Você faz qualquer momento valer a pena."
+"Você chegou de um jeito simples e deixou tudo mais bonito.",
+"Tem coisas que não precisam de muito texto: meu coração escolheu você.",
+"Gosto da paz que existe quando penso em nós dois.",
+"Você é aquele detalhe que melhora o dia inteiro.",
+"Algumas lembranças viram casa dentro da gente. Você virou.",
+"Eu gosto do seu jeito, do seu riso e da calma que você traz.",
+"Com você, até o silêncio parece companhia boa.",
+"Meu coração fica leve quando a lembrança é você.",
+"Não é exagero, é carinho guardado há tempo demais.",
+"Você é uma dessas pessoas raras que fazem o mundo parecer mais gentil.",
+"Eu gosto da nossa história porque ela tem verdade.",
+"Seu sorriso tem um jeito bonito de ficar na memória.",
+"Tem foto que guarda um segundo. Tem pessoa que guarda a vida.",
+"Você é meu pensamento bonito no meio de um dia comum.",
+"Eu não quero pressa. Quero presença, carinho e nós dois.",
+"Se carinho fosse lugar, eu moraria no seu abraço.",
+"Você faz o simples parecer especial.",
+"Eu gosto da forma como meu coração fica quando é você.",
+"Nosso amor não precisa gritar. Ele aparece nos detalhes.",
+"Você é a parte calma de muita coisa dentro de mim.",
+"Eu te escolheria nos dias bons e também nos dias difíceis.",
+"Tem uma beleza tranquila em tudo que lembra você.",
+"Você é lembrança boa antes mesmo do dia terminar.",
+"Meu mundo fica mais bonito quando você aparece nele.",
+"Eu gosto de você de um jeito leve, sincero e inteiro.",
+"Você é poesia sem precisar rimar.",
+"Algumas pessoas passam. Você ficou de um jeito bonito.",
+"Seu carinho tem som de lar.",
+"Não existe perfeição aqui, existe verdade. E isso é mais bonito.",
+"Você é meu motivo favorito para sorrir do nada.",
+"Eu guardo nós dois com cuidado no peito.",
+"Te amar é uma forma bonita de agradecer pela vida.",
+"Você é o tipo de pessoa que a alma reconhece.",
+"Quando penso em futuro, gosto quando você aparece nele.",
+"Meu carinho por você cabe em tudo, menos em poucas palavras.",
+"Você é a pausa bonita que meu coração precisava.",
+"Com você, o tempo parece andar mais manso.",
+"Eu gosto de tudo que fica mais bonito quando é com você.",
+"Você me lembra que amor também pode ser paz.",
+"Nos detalhes pequenos, eu encontro grandes motivos para te amar.",
+"Tem um universo inteiro em cada lembrança nossa.",
+"Você é meu acaso preferido.",
+"Eu não quero um amor perfeito. Quero um amor nosso.",
+"Seu jeito mora em mim de uma forma bonita.",
+"Se eu pudesse guardar um lugar no mundo, seria ao seu lado.",
+"Você faz falta até quando acabou de ir embora.",
+"Meu coração aprendeu seu nome de um jeito especial.",
+"Você é meu carinho favorito em forma de pessoa.",
+"Eu gosto da nossa bagunça, da nossa calma e dos nossos detalhes.",
+"Que a vida seja gentil com nós dois.",
+"Você é luz baixa, café quente e abraço demorado.",
+"Eu amo a forma como você transforma lembranças em saudade boa.",
+"Não tem nada brega em sentir bonito por alguém raro.",
+"Eu gosto de nós porque parece verdade até nos detalhes pequenos.",
+"Você é o melhor lugar para onde meu pensamento corre.",
+"Meu coração sorri baixinho quando lembra de você.",
+"Alguns encontros parecem resposta. Você pareceu.",
+"Você é meu capítulo favorito, mesmo nos dias sem título.",
+"Eu quero viver coisas simples com você e chamar isso de felicidade.",
+"Você é a delicadeza que deixou minha vida mais bonita."
 ];
 
-const foto = document.getElementById("foto");
-const frase = document.getElementById("frase");
-const contador = document.getElementById("contador");
+const miniNotas = [
+"você + eu",
+"saudade boa",
+"meu lugar",
+"carinho",
+"nós dois",
+"calma bonita",
+"amor leve",
+"lembrança",
+"meu sorriso"
+];
 
-function carregarFotos(){
-  let carregadas = 0;
+const fotoA = document.getElementById("fotoA");
+const fotoB = document.getElementById("fotoB");
+const phrase = document.getElementById("phrase");
+const counter = document.getElementById("counter");
+const footerText = document.getElementById("footerText");
+const toast = document.getElementById("toast");
+const bar = document.getElementById("bar");
+
+document.getElementById("startBtn").addEventListener("click", () => {
+  document.getElementById("intro").classList.add("hidden");
+  showToast("A surpresa começou ❤️");
+  startEffects();
+});
+
+function showToast(text){
+  toast.textContent = text;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2600);
+}
+
+async function existeImagem(src){
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(src);
+    img.onerror = () => resolve(null);
+    img.src = src + "?v=" + Date.now();
+  });
+}
+
+async function carregarFotos(){
+  showToast("Procurando as fotos...");
+  const achadas = [];
 
   for(let i = 1; i <= totalFotos; i++){
-    const img = new Image();
-    img.src = `${i}.jpg`;
+    let encontrou = false;
 
-    img.onload = () => {
-      imagens.push(img.src);
-      carregadas++;
-
-      if(imagens.length === 1){
-        imagens.sort(() => Math.random() - 0.5);
-        iniciar();
+    for(const pasta of caminhos){
+      const src = `${pasta}${i}.jpg`;
+      const ok = await existeImagem(src);
+      if(ok){
+        achadas.push(`${pasta}${i}.jpg`);
+        encontrou = true;
+        break;
       }
-    };
+    }
+
+    if(i > 35 && !encontrou && achadas.length > 0){
+      let proximasVazias = 0;
+      for(let j = i; j < i + 10; j++){
+        const teste = await existeImagem(`${caminhos[0]}${j}.jpg`);
+        if(!teste) proximasVazias++;
+      }
+      if(proximasVazias >= 10) break;
+    }
   }
 
-  setTimeout(() => {
-    if(imagens.length === 0){
-      frase.textContent = "Nenhuma foto foi encontrada. Verifique se estão na pasta fotos e nomeadas como 1.jpg, 2.jpg, 3.jpg...";
-    }
-  }, 2500);
+  imagens = achadas.sort(() => Math.random() - .5);
+
+  if(imagens.length === 0){
+    phrase.textContent = "Nenhuma foto foi encontrada. Coloque as imagens como 1.jpg, 2.jpg, 3.jpg... junto do index.html ou dentro da pasta fotos.";
+    counter.textContent = "nenhuma imagem encontrada";
+    return;
+  }
+
+  showToast(`${imagens.length} lembrança(s) encontradas ✨`);
+  iniciar();
 }
 
 function iniciar(){
   trocar();
-  setInterval(trocar, 5200);
+  clearInterval(slideshowTimer);
+  slideshowTimer = setInterval(trocar, 6500);
+}
+
+function reiniciarBarra(){
+  bar.style.animation = "none";
+  void bar.offsetWidth;
+  bar.style.animation = "loadBar 6.5s linear infinite";
 }
 
 function trocar(){
-  if(imagens.length === 0) return;
+  if(!imagens.length) return;
 
-  foto.classList.remove("ativa");
+  const atual = usandoA ? fotoA : fotoB;
+  const proxima = usandoA ? fotoB : fotoA;
 
-  setTimeout(() => {
-    foto.src = imagens[indice];
-    foto.classList.add("ativa");
+  proxima.src = imagens[indice];
+  proxima.classList.add("active");
+  atual.classList.remove("active");
 
-    frase.textContent = frases[Math.floor(Math.random() * frases.length)];
-    contador.textContent = `${indice + 1} de ${imagens.length} lembranças ❤️`;
+  phrase.classList.remove("change");
+  void phrase.offsetWidth;
+  phrase.textContent = frases[Math.floor(Math.random() * frases.length)];
+  phrase.classList.add("change");
 
-    indice++;
-    if(indice >= imagens.length) indice = 0;
-  }, 500);
+  counter.textContent = `♡ lembrança ${indice + 1} de ${imagens.length}`;
+  footerText.textContent = indice % 3 === 0
+    ? "feito para guardar momentos, não apenas fotos"
+    : indice % 3 === 1
+    ? "um carinho em forma de página"
+    : "cada detalhe aqui lembra você";
+
+  indice = (indice + 1) % imagens.length;
+  usandoA = !usandoA;
+  reiniciarBarra();
 }
 
-function particula(){
+function startEffects(){
+  setInterval(criarParticula, 220);
+  setInterval(criarNota, 3100);
+}
+
+function criarParticula(){
   const el = document.createElement("div");
-  const tipo = Math.random() > .45 ? "heart" : "star";
-
-  el.className = tipo;
-  el.innerHTML = tipo === "heart" ? "❤" : "✦";
-  el.style.left = Math.random() * 100 + "vw";
-  el.style.fontSize = (Math.random() * 20 + 14) + "px";
-  el.style.color = tipo === "heart" ? "rgba(255,255,255,.9)" : "rgba(255,220,240,.9)";
-  el.style.animationDuration = (Math.random() * 5 + 5) + "s";
-  el.style.opacity = Math.random();
-
+  el.className = "particle";
+  const itens = ["♡","✦","❀","·","❤"];
+  el.textContent = itens[Math.floor(Math.random()*itens.length)];
+  el.style.left = Math.random()*100 + "vw";
+  el.style.fontSize = (Math.random()*18 + 11) + "px";
+  el.style.color = Math.random() > .55 ? "rgba(255,255,255,.85)" : "rgba(255,205,224,.9)";
+  el.style.opacity = Math.random()*.65 + .25;
+  el.style.animationDuration = (Math.random()*5 + 6) + "s";
+  el.style.transform = `translateX(${Math.random()*50-25}px)`;
   document.body.appendChild(el);
-  setTimeout(() => el.remove(), 10000);
+  setTimeout(() => el.remove(), 12000);
 }
 
-setInterval(particula, 250);
+function criarNota(){
+  const el = document.createElement("div");
+  el.className = "loveNote";
+  el.textContent = miniNotas[Math.floor(Math.random()*miniNotas.length)];
+  el.style.left = Math.random()*78 + 8 + "vw";
+  el.style.bottom = "-40px";
+  el.style.animationDuration = (Math.random()*3 + 8) + "s";
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 12000);
+}
 
 carregarFotos();
+setTimeout(() => startEffects(), 1200);
 </script>
 
 </body>
